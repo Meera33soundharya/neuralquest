@@ -1,0 +1,749 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NeuralQuest — AI-Powered Knowledge Gaming and Adaptive Learning Platform. Turn educational documents into interactive games, battle quizzes, earn XP, and level up.">
+    <title>NeuralQuest — AI Knowledge Gaming Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="nq-theme">
+
+    <!-- Offline / Status Alert Banner -->
+    <div id="serverStatusBanner" class="server-banner hidden" role="alert">
+        <div class="banner-content">
+            <span class="banner-pulse"></span>
+            <span id="bannerMessage">Connecting to game server...</span>
+        </div>
+        <button id="bannerDismiss" class="banner-close" aria-label="Dismiss banner">&times;</button>
+    </div>
+
+    <!-- Animated Particles & Cyber Grid -->
+    <div class="particles" id="particles" aria-hidden="true"></div>
+    <div class="grid-overlay" aria-hidden="true"></div>
+
+    <!-- ================= AUTH SECTION ================= -->
+    <section id="authSection" class="auth-section" role="main">
+        <div class="auth-glow" aria-hidden="true"></div>
+
+        <div class="auth-card" role="form" aria-label="Authentication">
+            <!-- Game Logo -->
+            <div class="auth-logo">
+                <div class="logo-icon" aria-hidden="true">
+                    <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <polygon points="22,2 42,12 42,32 22,42 2,32 2,12" stroke="url(#gGrad1)" stroke-width="2.5" fill="rgba(139,92,246,0.15)"/>
+                        <circle cx="22" cy="22" r="8" fill="url(#gGrad2)"/>
+                        <circle cx="22" cy="22" r="14" stroke="url(#gGrad2)" stroke-width="1.5" stroke-dasharray="3 3"/>
+                        <defs>
+                            <linearGradient id="gGrad1" x1="0" y1="0" x2="44" y2="44">
+                                <stop offset="0%" stop-color="#8b5cf6"/>
+                                <stop offset="100%" stop-color="#22d3ee"/>
+                            </linearGradient>
+                            <linearGradient id="gGrad2" x1="0" y1="0" x2="44" y2="44">
+                                <stop offset="0%" stop-color="#a855f7"/>
+                                <stop offset="100%" stop-color="#38bdf8"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <h1>NeuralQuest</h1>
+                    <span class="logo-badge">GAMIFIED RAG</span>
+                </div>
+            </div>
+
+            <p class="auth-subtitle">AI-Powered Knowledge Gaming & Adaptive Learning Arena</p>
+
+            <!-- Tabs -->
+            <div class="auth-tabs" role="tablist">
+                <button class="auth-tab active" id="tab-login" role="tab" aria-selected="true" aria-controls="loginForm">Sign In</button>
+                <button class="auth-tab" id="tab-register" role="tab" aria-selected="false" aria-controls="registerForm">Join Quest</button>
+                <div class="tab-indicator" aria-hidden="true"></div>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginForm" role="tabpanel" aria-labelledby="tab-login">
+                <div class="form-group">
+                    <label for="loginUsername">Player Call-sign / Username</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon" aria-hidden="true">
+                            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
+                        </span>
+                        <input type="text" id="loginUsername" placeholder="Enter username (e.g. admin)" autocomplete="username">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">Access Key / Password</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon" aria-hidden="true">
+                            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
+                        </span>
+                        <input type="password" id="loginPassword" placeholder="Enter password (e.g. admin123)" autocomplete="current-password">
+                    </div>
+                </div>
+
+                <button id="loginBtn" class="btn-primary" type="button">
+                    <span class="btn-text">Enter Arena</span>
+                    <span class="btn-glow" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerForm" class="hidden" role="tabpanel" aria-labelledby="tab-register">
+                <div class="form-group">
+                    <label for="registerUsername">Call-sign / Username</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon" aria-hidden="true">
+                            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
+                        </span>
+                        <input type="text" id="registerUsername" placeholder="Choose callsign" autocomplete="username">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="registerEmail">Academy Email</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon" aria-hidden="true">
+                            <svg viewBox="0 0 20 20" fill="currentColor"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/></svg>
+                        </span>
+                        <input type="email" id="registerEmail" placeholder="student@example.com" autocomplete="email">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="registerPassword">Security Password</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon" aria-hidden="true">
+                            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
+                        </span>
+                        <input type="password" id="registerPassword" placeholder="Minimum 8 characters" autocomplete="new-password">
+                    </div>
+                </div>
+
+                <button id="registerBtn" class="btn-primary" type="button">
+                    <span class="btn-text">Create Account</span>
+                    <span class="btn-glow" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <p id="authMessage" class="auth-message" role="alert" aria-live="polite"></p>
+        </div>
+    </section>
+
+
+    <!-- ================= DASHBOARD & GAMING PLATFORM ================= -->
+    <section id="dashboardSection" class="dashboard-section hidden">
+
+        <!-- Top Navigation Bar -->
+        <header class="topbar" role="banner">
+            <div class="topbar-left">
+                <button id="mobileNavToggle" class="mobile-toggle" aria-label="Toggle navigation">
+                    <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/></svg>
+                </button>
+
+                <div class="nav-logo" aria-label="NeuralQuest">
+                    <div class="nav-logo-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <polygon points="12,2 22,7 22,17 12,22 2,17 2,7" stroke="url(#topG)" stroke-width="2"/>
+                            <circle cx="12" cy="12" r="4" fill="url(#topG)"/>
+                            <defs>
+                                <linearGradient id="topG" x1="0" y1="0" x2="24" y2="24">
+                                    <stop offset="0%" stop-color="#8b5cf6"/>
+                                    <stop offset="100%" stop-color="#22d3ee"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <span class="nav-brand">NeuralQuest</span>
+                    <span class="nav-badge">ARENA</span>
+                </div>
+            </div>
+
+            <!-- Topbar Center: Player XP & Level Chips -->
+            <div class="topbar-center">
+                <div class="game-hud-chip" id="hudLevelChip" title="Your current player rank level">
+                    <span class="hud-icon">⭐</span>
+                    <span class="hud-label">LVL</span>
+                    <span class="hud-val" id="hudLevelVal">1</span>
+                </div>
+                <div class="game-hud-chip" id="hudXpChip" title="Experience points">
+                    <span class="hud-icon">⚡</span>
+                    <span class="hud-val" id="hudXpVal">0</span>
+                    <span class="hud-sub">XP</span>
+                </div>
+                <div class="game-hud-chip" id="hudStreakChip" title="Daily study streak">
+                    <span class="hud-icon">🔥</span>
+                    <span class="hud-val" id="hudStreakVal">0</span>
+                    <span class="hud-sub">DAY</span>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <div class="status-chip" id="globalStatus" aria-live="polite">
+                    <span class="status-dot ready" aria-hidden="true"></span>
+                    <span id="statusText">Ready</span>
+                </div>
+                <div class="user-chip">
+                    <div class="user-avatar" id="userAvatar" aria-hidden="true">U</div>
+                    <span id="usernameDisplay">Player</span>
+                </div>
+                <button id="logoutBtn" class="btn-logout" type="button" aria-label="Logout">
+                    <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"/></svg>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Layout: Navigation Sidebar + Dynamic Content -->
+        <main class="dashboard" role="main">
+
+            <!-- Sidebar Navigation -->
+            <aside class="sidebar" id="mainSidebar" role="navigation" aria-label="Main navigation">
+                
+                <nav class="nav-menu">
+                    <button class="nav-item active" data-view="dashboard">
+                        <span class="nav-icon">📊</span>
+                        <span>Dashboard</span>
+                    </button>
+                    <button class="nav-item" data-view="quiz-arena">
+                        <span class="nav-icon">⚔️</span>
+                        <span>AI Quiz Arena</span>
+                    </button>
+                    <button class="nav-item" data-view="game-modes">
+                        <span class="nav-icon">🎮</span>
+                        <span>Game Modes</span>
+                    </button>
+                    <button class="nav-item" data-view="knowledge-chat">
+                        <span class="nav-icon">💬</span>
+                        <span>AI Knowledge Chat</span>
+                    </button>
+                    <button class="nav-item" data-view="knowledge-base">
+                        <span class="nav-icon">📚</span>
+                        <span>Knowledge Base</span>
+                        <span class="doc-count" id="sidebarDocCount">0</span>
+                    </button>
+                    <button class="nav-item" data-view="daily-challenge">
+                        <span class="nav-icon">🎯</span>
+                        <span>Daily Challenge</span>
+                        <span class="badge-new">XP</span>
+                    </button>
+                    <button class="nav-item" data-view="leaderboard">
+                        <span class="nav-icon">🏆</span>
+                        <span>Leaderboard</span>
+                    </button>
+                    <button class="nav-item" data-view="achievements">
+                        <span class="nav-icon">🎖️</span>
+                        <span>Achievements</span>
+                    </button>
+                    <button class="nav-item" data-view="analytics">
+                        <span class="nav-icon">📈</span>
+                        <span>Learning Analytics</span>
+                    </button>
+                </nav>
+
+                <!-- Document Quick Upload Box in Sidebar -->
+                <div class="sidebar-upload-widget">
+                    <div class="widget-header">
+                        <h4>Upload Material</h4>
+                        <span id="docStatusBadge" class="mini-badge">PDF</span>
+                    </div>
+                    <button id="uploadBtn" class="btn-upload" type="button" aria-label="Upload PDF">
+                        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
+                        Upload PDF Document
+                    </button>
+                    <input type="file" id="fileInput" accept=".pdf" hidden>
+
+                    <!-- Progress bar -->
+                    <div class="upload-progress hidden" id="uploadProgress">
+                        <div class="progress-bar-wrap">
+                            <div class="progress-bar" id="progressBar"></div>
+                        </div>
+                        <span id="uploadStatusText">Processing vectors...</span>
+                    </div>
+                </div>
+
+            </aside>
+
+            <!-- Dynamic Platform View Area -->
+            <section class="content-viewport" id="contentViewport">
+
+                <!-- 1. DASHBOARD VIEW -->
+                <div class="view-panel" id="view-dashboard">
+                    <div class="page-header">
+                        <div>
+                            <h2 class="view-title">Player Command Hub</h2>
+                            <p class="view-desc">Monitor your knowledge score, learning milestones, and active quests.</p>
+                        </div>
+                        <button class="btn-action pulse" id="quickPlayBtn">⚡ Quick Battle</button>
+                    </div>
+
+                    <!-- Statistics Cards Grid -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon-wrap cyan">⚡</div>
+                            <div class="stat-meta">
+                                <span class="stat-label">Total Experience</span>
+                                <h3 class="stat-value" id="statXp">0 <span class="unit">XP</span></h3>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon-wrap purple">⭐</div>
+                            <div class="stat-meta">
+                                <span class="stat-label">Current Level</span>
+                                <h3 class="stat-value" id="statLevel">Level 1</h3>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon-wrap orange">🔥</div>
+                            <div class="stat-meta">
+                                <span class="stat-label">Learning Streak</span>
+                                <h3 class="stat-value" id="statStreak">0 <span class="unit">Days</span></h3>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon-wrap green">🎯</div>
+                            <div class="stat-meta">
+                                <span class="stat-label">Accuracy Rate</span>
+                                <h3 class="stat-value" id="statAccuracy">0%</h3>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon-wrap blue">🎮</div>
+                            <div class="stat-meta">
+                                <span class="stat-label">Games Completed</span>
+                                <h3 class="stat-value" id="statGames">0</h3>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon-wrap pink">📚</div>
+                            <div class="stat-meta">
+                                <span class="stat-label">Indexed Documents</span>
+                                <h3 class="stat-value" id="statDocs">0</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dashboard Split: Active Quests & Recommended Challenges -->
+                    <div class="dashboard-split">
+                        <div class="glass-panel">
+                            <div class="panel-header">
+                                <h3>⚔️ Start Document Game</h3>
+                                <span class="panel-tag">AI Generated</span>
+                            </div>
+                            <p class="panel-desc">Generate an interactive quiz battle, flashcards, or time challenges directly from your uploaded materials.</p>
+                            <div class="quick-action-box">
+                                <div class="form-group">
+                                    <label>Select Knowledge Document</label>
+                                    <select id="dashDocSelect" class="cyber-select">
+                                        <option value="">-- Choose an uploaded document --</option>
+                                    </select>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group flex-1">
+                                        <label>Game Mode</label>
+                                        <select id="dashModeSelect" class="cyber-select">
+                                            <option value="quiz_battle">⚔️ AI Quiz Battle</option>
+                                            <option value="time_challenge">⏱️ Time Challenge (15s)</option>
+                                            <option value="true_false">⚖️ True or False</option>
+                                            <option value="flashcard">🗂️ Flashcard Challenge</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group flex-1">
+                                        <label>Difficulty</label>
+                                        <select id="dashDiffSelect" class="cyber-select">
+                                            <option value="easy">🟢 Easy (+10 XP)</option>
+                                            <option value="medium" selected>🟡 Medium (+20 XP)</option>
+                                            <option value="hard">🔴 Hard (+30 XP)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button class="btn-primary w-full" id="dashStartQuizBtn">
+                                    <span class="btn-text">Generate & Play Game</span>
+                                    <span class="btn-glow"></span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel">
+                            <div class="panel-header">
+                                <h3>📜 Recent Battles & Quests</h3>
+                                <button class="btn-text-action" id="viewAllQuizzesBtn">View All</button>
+                            </div>
+                            <div id="recentQuizzesList" class="recent-list">
+                                <div class="empty-list-placeholder">No games generated yet. Select a document on the left to begin!</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. AI QUIZ ARENA (Active Gameplay Screen) -->
+                <div class="view-panel hidden" id="view-quiz-arena">
+                    
+                    <!-- Game HUD Header -->
+                    <div class="arena-hud">
+                        <div class="arena-quiz-info">
+                            <span class="arena-badge" id="arenaModeBadge">AI QUIZ BATTLE</span>
+                            <h3 id="arenaQuizTitle">Loading Quest...</h3>
+                            <span class="arena-doc-source" id="arenaDocSource">Source Document: None</span>
+                        </div>
+
+                        <!-- Timer Widget (For Time Challenge) -->
+                        <div class="timer-widget hidden" id="arenaTimerBox">
+                            <span class="timer-icon">⏱️</span>
+                            <span class="timer-val" id="arenaTimerVal">15</span>
+                            <span class="timer-unit">s</span>
+                        </div>
+
+                        <div class="arena-score-box">
+                            <div class="score-item">
+                                <span class="score-label">SCORE</span>
+                                <span class="score-val" id="arenaScore">0</span>
+                            </div>
+                            <div class="score-item">
+                                <span class="score-label">XP</span>
+                                <span class="score-val" id="arenaXpEarned">+0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="question-progress-bar">
+                        <div class="q-progress-fill" id="arenaProgressBar" style="width: 0%"></div>
+                    </div>
+                    <div class="q-progress-labels">
+                        <span id="arenaProgressText">Question 1 of 5</span>
+                        <span id="arenaStreakCounter">🔥 Streak: 0</span>
+                    </div>
+
+                    <!-- Gameplay Card (Interactive MCQ / True False) -->
+                    <div class="gameplay-container" id="gameplayContainer">
+                        <div class="question-card" id="questionCard">
+                            <div class="q-number-pill" id="qNumberPill">QUESTION 1</div>
+                            <h3 class="q-text" id="arenaQuestionText">Loading question...</h3>
+
+                            <!-- Options Grid -->
+                            <div class="options-grid" id="arenaOptionsGrid">
+                                <!-- Option buttons rendered dynamically -->
+                            </div>
+
+                            <!-- Live Feedback & AI Citation Box (Appears after answer) -->
+                            <div class="feedback-box hidden" id="arenaFeedbackBox">
+                                <div class="feedback-header" id="feedbackHeader">
+                                    <span class="feedback-icon" id="feedbackIcon">✅</span>
+                                    <span class="feedback-title" id="feedbackTitle">Correct Answer!</span>
+                                    <span class="feedback-xp" id="feedbackXp">+20 XP</span>
+                                </div>
+                                <p class="feedback-explanation" id="feedbackExplanation"></p>
+                                <div class="feedback-citation" id="feedbackCitation">
+                                    <span class="cite-icon">📖</span>
+                                    <span id="citationText">Page 1 — Verified Grounded Source</span>
+                                </div>
+                            </div>
+
+                            <!-- Next Question Navigation Button -->
+                            <div class="action-footer">
+                                <button class="btn-action next-btn hidden" id="arenaNextBtn">
+                                    Next Question →
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Flashcard View (Used when in Flashcard mode) -->
+                        <div class="flashcard-container hidden" id="flashcardContainer">
+                            <div class="flashcard" id="flashcardElement">
+                                <div class="flashcard-inner">
+                                    <div class="flashcard-front">
+                                        <span class="fc-badge">FRONT — QUESTION</span>
+                                        <p id="fcFrontText">Front question text...</p>
+                                        <span class="fc-hint">Click card to reveal answer</span>
+                                    </div>
+                                    <div class="flashcard-back">
+                                        <span class="fc-badge answer">BACK — ANSWER & CITATION</span>
+                                        <h4 id="fcBackAnswer">Answer</h4>
+                                        <p id="fcBackExplanation">Explanation...</p>
+                                        <span class="fc-citation" id="fcCitation">Source: Page 1</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="fc-controls">
+                                <button class="btn-secondary" id="fcPrevBtn">← Previous</button>
+                                <button class="btn-primary" id="fcFlipBtn">🔄 Flip Card</button>
+                                <button class="btn-action" id="fcNextBtn">Next Card →</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Final Game Over / Victory Modal Screen -->
+                    <div class="results-screen hidden" id="arenaResultsScreen">
+                        <div class="results-card">
+                            <div class="trophy-orb">🏆</div>
+                            <h2 class="victory-title">Quest Completed!</h2>
+                            <p class="victory-subtitle" id="victorySubtitle">You've mastered this knowledge segment.</p>
+
+                            <div class="results-stats-row">
+                                <div class="res-stat">
+                                    <span class="res-label">Score</span>
+                                    <span class="res-value" id="resScore">100</span>
+                                </div>
+                                <div class="res-stat">
+                                    <span class="res-label">Accuracy</span>
+                                    <span class="res-value" id="resAccuracy">100%</span>
+                                </div>
+                                <div class="res-stat">
+                                    <span class="res-label">XP Gained</span>
+                                    <span class="res-value highlight" id="resXp">+120 XP</span>
+                                </div>
+                            </div>
+
+                            <div class="results-actions">
+                                <button class="btn-secondary" id="resDashboardBtn">Return to Hub</button>
+                                <button class="btn-primary" id="resPlayAgainBtn">Play Again</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- 3. GAME MODES SELECTION VIEW -->
+                <div class="view-panel hidden" id="view-game-modes">
+                    <div class="page-header">
+                        <div>
+                            <h2 class="view-title">Knowledge Battle Arena</h2>
+                            <p class="view-desc">Select an operational game mode tailored to your learning pace.</p>
+                        </div>
+                    </div>
+
+                    <div class="game-modes-grid">
+                        <div class="mode-card" data-mode="quiz_battle">
+                            <div class="mode-icon-box purple">⚔️</div>
+                            <h3>AI Quiz Battle</h3>
+                            <p>Challenge standard document-grounded multiple choice questions with progressive XP scaling and explanations.</p>
+                            <span class="mode-reward">+20 XP per question</span>
+                            <button class="btn-mode-select">Select Mode</button>
+                        </div>
+
+                        <div class="mode-card" data-mode="time_challenge">
+                            <div class="mode-icon-box orange">⏱️</div>
+                            <h3>Time Challenge</h3>
+                            <p>Test your knowledge under time pressure! 15 seconds per question with bonus speed points.</p>
+                            <span class="mode-reward">+25 XP + Speed Bonus</span>
+                            <button class="btn-mode-select">Select Mode</button>
+                        </div>
+
+                        <div class="mode-card" data-mode="true_false">
+                            <div class="mode-icon-box cyan">⚖️</div>
+                            <h3>True or False</h3>
+                            <p>Rapid-fire verification of document statements. Detect factual statements vs misconceptions.</p>
+                            <span class="mode-reward">+15 XP per question</span>
+                            <button class="btn-mode-select">Select Mode</button>
+                        </div>
+
+                        <div class="mode-card" data-mode="flashcard">
+                            <div class="mode-icon-box green">🗂️</div>
+                            <h3>Flashcard Challenge</h3>
+                            <p>Interactive 3D flip-card memory training with deep concept definitions and exact source citations.</p>
+                            <span class="mode-reward">Concept Mastery</span>
+                            <button class="btn-mode-select">Select Mode</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. AI KNOWLEDGE CHAT (Original Working RAG Chatbot Interface) -->
+                <div class="view-panel hidden" id="view-knowledge-chat">
+                    <div class="chat-wrapper">
+                        <!-- Chat Header -->
+                        <div class="chat-header">
+                            <div class="chat-header-info">
+                                <div class="chat-header-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                                </div>
+                                <div>
+                                    <h2>Document Knowledge Chat</h2>
+                                    <p id="chatSubtitle">Ask questions directly against your indexed ChromaDB vector store</p>
+                                </div>
+                            </div>
+                            <button id="clearChatBtn" class="btn-icon" type="button" title="Clear chat history" aria-label="Clear chat">
+                                <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                            </button>
+                        </div>
+
+                        <!-- Chat Messages Container -->
+                        <div id="chatMessages" class="chat-messages" role="log" aria-live="polite">
+                            <!-- Welcome card -->
+                            <div class="welcome-card" id="welcomeCard">
+                                <div class="welcome-orb" aria-hidden="true"></div>
+                                <div class="welcome-icon">💬</div>
+                                <h3>NeuralQuest Knowledge Chat</h3>
+                                <p>Query your uploaded documents using grounded RAG. Real answers, page citations, zero hallucinations.</p>
+                                <div class="welcome-features">
+                                    <div class="feature-chip">📄 Sourced Context</div>
+                                    <div class="feature-chip">🧠 Gemini 2.5 Flash</div>
+                                    <div class="feature-chip">⚡ Fast ChromaDB</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chat Input -->
+                        <div class="chat-input-container">
+                            <div class="chat-input-box">
+                                <textarea
+                                    id="questionInput"
+                                    class="chat-input"
+                                    placeholder="Ask anything about your uploaded documents..."
+                                    rows="1"
+                                    aria-label="Ask questions"
+                                ></textarea>
+                                <button id="sendBtn" class="btn-send" type="button" aria-label="Send">
+                                    <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/></svg>
+                                </button>
+                            </div>
+                            <p class="input-hint">Press <kbd>Enter</kbd> to ask · <kbd>Shift+Enter</kbd> for newline</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. KNOWLEDGE BASE VIEW -->
+                <div class="view-panel hidden" id="view-knowledge-base">
+                    <div class="page-header">
+                        <div>
+                            <h2 class="view-title">My Knowledge Base</h2>
+                            <p class="view-desc">Manage your indexed PDFs, verify ingestion status, and generate custom games.</p>
+                        </div>
+                        <button class="btn-primary" id="kbUploadTriggerBtn">📤 Upload New PDF</button>
+                    </div>
+
+                    <div class="documents-grid" id="documentsList">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </div>
+
+                <!-- 6. DAILY CHALLENGE VIEW -->
+                <div class="view-panel hidden" id="view-daily-challenge">
+                    <div class="page-header">
+                        <div>
+                            <h2 class="view-title">Daily Knowledge Challenge</h2>
+                            <p class="view-desc">Complete daily document-based questions to build your streak and earn bonus XP.</p>
+                        </div>
+                    </div>
+
+                    <div class="daily-card-container">
+                        <div class="daily-banner-card">
+                            <div class="daily-badge">TODAY'S QUEST</div>
+                            <h3>Daily Master Quest</h3>
+                            <p>Challenge 5 questions from your most recently uploaded study materials. Maintain your streak to earn +50 bonus XP!</p>
+                            <div class="daily-meta">
+                                <span>🔥 Current Streak: <strong id="dailyStreakVal">0 Days</strong></span>
+                                <span>🎁 Reward: <strong>+50 Bonus XP</strong></span>
+                            </div>
+                            <button class="btn-primary" id="startDailyQuestBtn">Start Daily Challenge</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. LEADERBOARD VIEW -->
+                <div class="view-panel hidden" id="view-leaderboard">
+                    <div class="page-header">
+                        <div>
+                            <h2 class="view-title">Academy Leaderboard</h2>
+                            <p class="view-desc">See where you stand among top learners in the academy.</p>
+                        </div>
+                        <div class="leaderboard-tabs">
+                            <button class="btn-chip active">All Time</button>
+                        </div>
+                    </div>
+
+                    <div class="leaderboard-table-wrap">
+                        <table class="cyber-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Student</th>
+                                    <th>Level</th>
+                                    <th>Total XP</th>
+                                    <th>Games</th>
+                                    <th>Accuracy</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboardBody">
+                                <!-- Rendered dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 8. ACHIEVEMENTS VIEW -->
+                <div class="view-panel hidden" id="view-achievements">
+                    <div class="page-header">
+                        <div>
+                            <h2 class="view-title">Badges & Achievements</h2>
+                            <p class="view-desc">Earn badges by completing games, building streaks, and leveling up.</p>
+                        </div>
+                    </div>
+
+                    <div class="achievements-grid" id="achievementsList">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </div>
+
+                <!-- 9. LEARNING ANALYTICS VIEW -->
+                <div class="view-panel hidden" id="view-analytics">
+                    <div class="page-header">
+                        <div>
+                            <h2 class="view-title">Learning Analytics</h2>
+                            <p class="view-desc">Deep breakdown of accuracy, difficulty performance, and study history.</p>
+                        </div>
+                    </div>
+
+                    <div class="analytics-grid">
+                        <div class="analytics-card">
+                            <h4>🎯 Difficulty Mastery</h4>
+                            <div id="analyticsDifficultyBars" class="difficulty-bars">
+                                <!-- Rendered dynamically -->
+                            </div>
+                        </div>
+
+                        <div class="analytics-card">
+                            <h4>📅 7-Day Activity Stream</h4>
+                            <div id="analyticsWeeklyGrid" class="weekly-activity-grid">
+                                <!-- Rendered dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+    </section>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true"></div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+        <div class="modal">
+            <div class="modal-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+            </div>
+            <h3 id="confirmTitle">Delete Document?</h3>
+            <p id="confirmMessage">This will permanently delete the document, chunks, and embeddings. This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button id="confirmCancel" class="btn-secondary" type="button">Cancel</button>
+                <button id="confirmOk" class="btn-danger" type="button">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Core Script -->
+    <script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>
