@@ -15,3 +15,4 @@ echo "==> [4/4] Running database migrations..."
 python manage.py migrate
 
 echo "==> Build complete! Ready to start server."
+
