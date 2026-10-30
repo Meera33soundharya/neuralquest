@@ -62,11 +62,11 @@ def _get_cache_key(question: str, user_id) -> str:
 
 def _detect_intent(query: str) -> str:
     q = query.lower()
-    if any(k in q for k in ["keyword", "key word", "tags", "terms", "important words"]):
+    if any(k in q for k in ["keyword", "key word", "tag", "term"]):
         return "keywords"
-    if any(k in q for k in ["summar", "overview", "brief", "abstract", "gist", "about"]):
+    if any(k in q for k in ["summar", "overview", "brief", "abstract", "gist"]):
         return "summary"
-    if any(k in q for k in ["key point", "points", "takeaway", "take away", "bullet", "highlights", "refing", "findings"]):
+    if any(k in q for k in ["key point", "point", "takeaway", "take away", "bullet", "highlight", "refing", "finding"]):
         return "key_points"
     return "qa"
 
@@ -305,12 +305,10 @@ EXECUTIVE SUMMARY:"""
             except Exception as exc:
                 logger.warning("Gemini model %s call failed: %s", model_name, exc)
 
-    # 6. Smart Fallback if API Quota Exhausted or Offline
+    # 6. Smart Fallback if API Quota Exhausted or Offline (never cache fallback to allow dynamic questions)
     logger.info("Executing intent-aware smart fallback for user_id=%s, intent=%s", user_id, intent)
     fallback_answer = _smart_fallback(chunks, clean_q, intent)
-    result = {
+    return {
         "answer": fallback_answer,
         "sources": sources,
     }
-    _QUERY_CACHE[cache_key] = (now, result)
-    return result
