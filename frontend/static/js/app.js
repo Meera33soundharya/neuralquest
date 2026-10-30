@@ -997,6 +997,11 @@ async function sendMessage() {
         removeTypingIndicator(typingId);
 
         if (!res.ok) {
+            if (res.status === 401) {
+                appendBotMessage("🔒 Your session has expired. Please log out and sign back in to refresh your access.");
+                showToast("Session expired. Please log out and sign in again.", "warning");
+                return;
+            }
             appendBotMessage(data.detail || data.error || "Could not retrieve answer from documents.");
             return;
         }

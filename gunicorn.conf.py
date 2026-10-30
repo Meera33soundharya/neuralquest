@@ -18,14 +18,26 @@ loglevel = "info"
 
 def on_starting(server):
     """
-    Ensure migrations and static files are executed even if the user's
-    build command on Render only ran 'pip install -r requirements.txt'.
+    Ensure migrations, static files, and admin account exist on startup.
     """
     print("==> Gunicorn on_starting: Verifying database migrations...")
     try:
         subprocess.run([sys.executable, "manage.py", "migrate", "--noinput"], check=False)
     except Exception as e:
         print(f"Warning: automatic startup migrate skipped: {e}")
+
+    print("==> Gunicorn on_starting: Verifying default administrator user...")
+    try:
+        seed_cmd = (
+            "from django.contrib.auth.models import User; "
+            "from rest_framework.authtoken.models import Token; "
+            "u, _ = User.objects.get_or_create(username='admin', defaults={'email': 'admin@neuralquest.io'}); "
+            "u.set_password('admin123'); u.is_superuser = True; u.is_staff = True; u.save(); "
+            "Token.objects.get_or_create(user=u)"
+        )
+        subprocess.run([sys.executable, "manage.py", "shell", "-c", seed_cmd], check=False)
+    except Exception as e:
+        print(f"Warning: automatic startup admin creation skipped: {e}")
 
     print("==> Gunicorn on_starting: Verifying static files...")
     try:
