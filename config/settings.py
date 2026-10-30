@@ -23,9 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
 
-SECRET_KEY = os.getenv("SECRET_KEY")
-if not SECRET_KEY:
-    raise RuntimeError("SECRET_KEY is not configured.")
+SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-neuralquest-default-secret-key-prod-983471092834710")
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -34,10 +32,18 @@ DEBUG = os.getenv("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = os.getenv(
     "ALLOWED_HOSTS",
-    "localhost,127.0.0.1,testserver",
+    "localhost,127.0.0.1,testserver,*.onrender.com,*",
 ).split(",")
 if "testserver" not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append("testserver")
+if "*" not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append("*")
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    "CSRF_TRUSTED_ORIGINS",
+    "https://*.onrender.com,http://localhost:8000,http://127.0.0.1:8000",
+).split(",")
 
 OLLAMA_BASE_URL = os.getenv(
     "OLLAMA_BASE_URL",
