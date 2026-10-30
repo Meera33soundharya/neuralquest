@@ -24,7 +24,6 @@ def add_chunk(
     """
     Store a document chunk in ChromaDB.
     """
-
     collection = get_collection()
 
     collection.add(
@@ -36,12 +35,11 @@ def add_chunk(
 
 
 def delete_document_chunks(document_id):
-
     collection = get_collection()
 
     collection.delete(
         where={
-            "document_id": document_id,
+            "document_id": int(document_id),
         }
     )
 
@@ -51,24 +49,25 @@ def search_chunks(
         user_id,
         n_results=5,
 ):
-
     """
     Search only the current user's document chunks.
     """
-
     collection = get_collection()
+    count = collection.count()
+    if count == 0:
+        return {"documents": [[]], "metadatas": [[]], "distances": [[]]}
 
+    k = min(n_results, count)
     return collection.query(
         query_embeddings=[query_embedding],
-        n_results=n_results,
+        n_results=k,
         where={
-            "user_id": user_id
+            "user_id": int(user_id)
         },
     )
 
 
 def get_all_chunks():
-
     collection = get_collection()
 
     return collection.get(
