@@ -35,3 +35,4 @@ Thumbs.db
 
 fastembed_cache/
 vectorstore_old/
+staticfiles/

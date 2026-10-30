@@ -1,5 +1,5 @@
 
-`"""NeuralQuest - Comprehensive Feature Verification Script (Fixed URLs)"""
+"""NeuralQuest - Comprehensive Feature Verification Script (Fixed URLs)"""
 import os, sys, json, django
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
