@@ -81,7 +81,13 @@ def generate_answer(question, user_id, n_results=3):
     )
 
     if client is None:
-        raise AIServiceError("Gemini API key is not configured.")
+        logger.warning("Gemini client not initialized, returning grounded document context fallback.")
+        fallback_text = (
+            f"According to your uploaded documents:\n\n"
+            f"{context_parts[0] if context_parts else 'No relevant text found in document.'}\n\n"
+            f"(Notice: Add GEMINI_API_KEY in Render Environment to enable direct AI answer generation.)"
+        )
+        return {"answer": fallback_text, "sources": sources}
 
     try:
         response = client.models.generate_content(
